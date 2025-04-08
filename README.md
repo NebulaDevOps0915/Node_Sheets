@@ -3,8 +3,6 @@
 > The most popular [Google Sheets API](https://developers.google.com/sheets/api/guides/concepts) wrapper for javascript / typescript
 
 [![NPM version](https://img.shields.io/npm/v/google-spreadsheet)](https://www.npmjs.com/package/google-spreadsheet)
-[![CircleCI](https://circleci.com/gh/theoephraim/node-google-spreadsheet.svg?style=shield)](https://circleci.com/gh/theoephraim/node-google-spreadsheet)
-[![Known Vulnerabilities](https://snyk.io/test/github/theoephraim/node-google-spreadsheet/badge.svg?targetFile=package.json)](https://snyk.io/test/github/theoephraim/node-google-spreadsheet?targetFile=package.json)
 [![NPM](https://img.shields.io/npm/dw/google-spreadsheet)](https://www.npmtrends.com/google-spreadsheet)
 
 - multiple auth options (via [google-auth-library](https://www.npmjs.com/package/google-auth-library)) - service account, OAuth, API key, ADC, etc
@@ -13,10 +11,6 @@
 - managing worksheets - add, remove, resize, update properties (ex: title), duplicate to same or other document
 - managing docs - create new doc, delete doc, basic sharing/permissions
 - export - download sheet/docs in various formats
-
-**Docs site -**
-Full docs available at [https://theoephraim.github.io/node-google-spreadsheet](https://theoephraim.github.io/node-google-spreadsheet)
-
 ---
 
 > 🌈 **Installation** - `pnpm i google-spreadsheet`<br/>(or `npm i google-spreadsheet --save` or `yarn add google-spreadsheet`)
@@ -25,7 +19,7 @@ Full docs available at [https://theoephraim.github.io/node-google-spreadsheet](h
 
 _The following examples are meant to give you an idea of just some of the things you can do_
 
-> **IMPORTANT NOTE** - To keep the examples concise, I'm calling await [at the top level](https://v8.dev/features/top-level-await) which is not allowed by default in most versions of node. If you need to call await in a script at the root level, you must instead wrap it in an async function like so:
+> **IMPORTANT NOTE** - To keep the examples concise, I'm calling await [at the top level](https://v8.dev/features/top-level-await) which is not allowed in some older versions of node. If you need to call await in a script at the root level and your environment does not support it, you must instead wrap it in an async function like so:
 
 ```javascript
 (async function () {
@@ -62,12 +56,6 @@ console.log(sheet.rowCount);
 const newSheet = await doc.addSheet({ title: 'another sheet' });
 await newSheet.delete();
 ```
-
-More info:
-
-- [GoogleSpreadsheet](https://theoephraim.github.io/node-google-spreadsheet/#/classes/google-spreadsheet)
-- [GoogleSpreadsheetWorksheet](https://theoephraim.github.io/node-google-spreadsheet/#/classes/google-spreadsheet-worksheet)
-- [Authentication](https://theoephraim.github.io/node-google-spreadsheet/#/guides/authentication)
 
 ### Working with rows
 
@@ -107,10 +95,6 @@ userRows[0].get('name'); // <- TS is happy, knows it will be a string
 userRows[0].get('badColumn'); // <- will throw a type error
 ```
 
-More info:
-
-- [GoogleSpreadsheetWorksheet > Working With Rows](https://theoephraim.github.io/node-google-spreadsheet/#/classes/google-spreadsheet-worksheet#working-with-rows)
-- [GoogleSpreadsheetRow](https://theoephraim.github.io/node-google-spreadsheet/#/classes/google-spreadsheet-row)
 
 ### Working with cells
 
@@ -130,11 +114,6 @@ a1.textFormat = { bold: true };
 c6.note = 'This is a note!';
 await sheet.saveUpdatedCells(); // save all updates in one call
 ```
-
-More info:
-
-- [GoogleSpreadsheetWorksheet > Working With Cells](https://theoephraim.github.io/node-google-spreadsheet/#/classes/google-spreadsheet-worksheet#working-with-cells)
-- [GoogleSpreadsheetCell](https://theoephraim.github.io/node-google-spreadsheet/#/classes/google-spreadsheet-cell)
 
 ### Managing docs and sharing
 
@@ -171,12 +150,6 @@ While Google's v4 sheets API is much easier to use than v3 was, the official [go
 This module makes trade-offs for simplicity of the interface.
 Google's API provides a mechanism to make many requests in parallel, so if speed and efficiency are extremely important to your use case, you may want to use their API directly. There are also many lesser-used features of their API that are not implemented here yet.
 
-## Support & Contributions
-
-This module was written and is actively maintained by [Theo Ephraim](https://theoephraim.com).
-
-**Are you actively using this module for a commercial project? Want to help support it?**<br>
-[Buy Theo a beer](https://paypal.me/theoephraim)
 
 ### Sponsors
 
@@ -191,4 +164,4 @@ The content lives in markdown files in the docs folder.
 
 ## License
 
-This is free and unencumbered public domain software. For more info, see https://unlicense.org.
+This project is released under the MIT license. Previously it was using the "Unlicense". TLDR do whatever you want with it.

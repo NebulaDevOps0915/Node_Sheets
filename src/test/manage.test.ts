@@ -1,4 +1,7 @@
-
+import 'dmno/auto-inject-globals';
+import {
+  describe, expect, it, beforeAll, afterAll, afterEach,
+} from 'vitest';
 import delay from 'delay';
 import * as _ from '../lib/lodash';
 
@@ -39,9 +42,8 @@ describe('Managing doc info and sheets', () => {
   // });
 
   // hitting rate limits when running tests on ci - so we add a short delay
-  if (process.env.NODE_ENV === 'ci') afterEach(async () => delay(500));
+  if (DMNO_CONFIG.TEST_DELAY) afterEach(async () => delay(DMNO_CONFIG.TEST_DELAY));
 
-  /* eslint-disable jest/no-commented-out-tests */
   // uncomment temporarily to clear out all the sheets in the test doc
   // it.only('clear out all the existing sheets', async () => {
   //   await doc.loadInfo();
@@ -187,6 +189,60 @@ describe('Managing doc info and sheets', () => {
       await sheet.clear();
       await sheet.loadCells();
       expect(sheet.cellStats.nonEmpty).toBe(0);
+    });
+  });
+
+  describe('data validation rules', () => {
+    let sheet: GoogleSpreadsheetWorksheet;
+
+    beforeAll(async () => {
+      sheet = await doc.addSheet({ title: `validation rules test ${+new Date()}` });
+    });
+    afterAll(async () => {
+      await sheet.delete();
+    });
+
+
+    it('can set data validation', async () => {
+      // add a dropdown; ref: https://stackoverflow.com/a/43442775/3068233
+      await sheet.setDataValidation(
+        {
+          startRowIndex: 2,
+          endRowIndex: 100,
+          startColumnIndex: 3,
+          endColumnIndex: 4,
+        },
+        {
+          condition: {
+            type: 'ONE_OF_LIST',
+            values: [
+              {
+                userEnteredValue: 'YES',
+              },
+              {
+                userEnteredValue: 'NO',
+              },
+              {
+                userEnteredValue: 'MAYBE',
+              },
+            ],
+          },
+          showCustomUi: true,
+          strict: true,
+        }
+      );
+    });
+
+    it('can clear a data validation', async () => {
+      await sheet.setDataValidation(
+        {
+          startRowIndex: 2,
+          endRowIndex: 100,
+          startColumnIndex: 3,
+          endColumnIndex: 4,
+        },
+        false
+      );
     });
   });
 

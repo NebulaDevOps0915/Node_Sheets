@@ -1,3 +1,7 @@
+import 'dmno/auto-inject-globals';
+import {
+  describe, expect, it, beforeAll, afterAll, afterEach,
+} from 'vitest';
 import delay from 'delay';
 import * as _ from '../lib/lodash';
 
@@ -33,7 +37,7 @@ describe('Row-based operations', () => {
     await sheet.delete();
   });
   // hitting rate limits when running tests on ci - so we add a short delay
-  if (process.env.NODE_ENV === 'ci') afterEach(async () => delay(500));
+  if (DMNO_CONFIG.TEST_DELAY) afterEach(async () => delay(DMNO_CONFIG.TEST_DELAY));
 
   describe('fetching rows', () => {
     let rows: GoogleSpreadsheetRow[];
@@ -63,6 +67,17 @@ describe('Row-based operations', () => {
       rows = await sheet.getRows({ offset: 2, limit: 2 });
       expect(rows.length).toEqual(2);
       expect(rows[0].get('numbers')).toEqual(INITIAL_DATA[2][0]);
+    });
+
+    it('it will fetch the same row content when the header is not populated', async () => {
+      sheet.resetLocalCache(true); // forget the header values
+      expect(() => sheet.headerValues).toThrowError('Header values are not yet loaded');
+      const rowsWithoutPrefetchHeaders = await sheet.getRows();
+
+      expect(sheet.headerValues).toBeDefined();
+      const rowsWithFetchedHeaders = await sheet.getRows();
+
+      expect(rowsWithoutPrefetchHeaders).toEqual(rowsWithFetchedHeaders);
     });
   });
 
@@ -313,8 +328,9 @@ describe('Row-based operations', () => {
     it('allows empty headers', async () => {
       await sheet.setHeaderRow(['', 'col1', '', 'col2']);
       rows = await sheet.getRows();
-      expect(rows[0].toObject()).not.toHaveProperty('');
-      expect(rows[0].toObject()).toHaveProperty('col1');
+      const rowProps = _.keys(rows[0].toObject());
+      expect(rowProps).not.toContain('');
+      expect(rowProps).toContain('col1');
     });
 
     it('trims each header', async () => {
